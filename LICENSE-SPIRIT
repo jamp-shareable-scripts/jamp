@@ -1,0 +1,33 @@
+The Spirit of the License
+
+The jamp project is a collection of scripts doing various things. It is hard to
+say where one bit of software ends and the other starts. Therefore, this
+document has been written to clarify the spirit of the license.
+
+The core code of jamp is released with the GNU General Public License Version 2.
+The purpose of this is to encourage widespread improvement of jamp as a
+universal framework/library (framebrary? Is that a nice word? Anyone?) for cross
+platform scripting. If jamp is improved in some way, the world is better off if
+those improvements are shared :).
+
+However, jamp is also a way to share and run scripts that are not directly part
+of the core jamp code. These scripts are viewed as their own individual bits of
+software. Therefore, you are free to choose whatever license you would like for
+scripts you write with the intention of running them using the jamp framebrary
+(I'm just going to run with that word; try and stop me!). This is done in the
+recognition that it is not possible to know all the circumstances in which
+software is being written and it would be great if jamp is nevertheless a
+helpful tool in all these circumstances. Further, since a script designed to run
+with jamp could be made to do almost anything, it is not really possible to say
+that the scope of the jamp project is so broad. So, the jamp project has no
+say over what the licenses of scripts that use it should be. That said, please
+do consider using a free software license for your projects that gives users
+control of their software.
+
+In short, software written for the jamp code repository is licensed with
+GPL-2.0, while scripts that utilise jamp for cross platform scripting are out 
+of scope for this license as they seen as separate pieces of software, not
+extensions to jamp.
+
+I hope this helps! And have fun with the jamp framebrary (ok, it's stuck now)!
+:)
