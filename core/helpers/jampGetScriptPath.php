@@ -14,8 +14,7 @@
  * @return string|boolean The full path to the script or false.
  */
 function jampGetScriptPath($scriptName) {
-	$base = getenv('JAMP_BASE');
-	$localName = $base . 'local' . DIRECTORY_SEPARATOR . 'scripts'
+	$localName = JAMP_BASE . 'local' . DIRECTORY_SEPARATOR . 'scripts'
 	. DIRECTORY_SEPARATOR . $scriptName . '.php';
 	
 	// Check first for a local script, so local scripts can override global ones.
@@ -23,10 +22,18 @@ function jampGetScriptPath($scriptName) {
 		return $localName;
 	}
 
-	$coreName = $base . 'core' . DIRECTORY_SEPARATOR . 'scripts'
+	$coreName = JAMP_BASE . 'core' . DIRECTORY_SEPARATOR . 'scripts'
 	. DIRECTORY_SEPARATOR . $scriptName . '.php';
 	if (file_exists($coreName)) {
 		return $coreName;
+	}
+	
+	$lookupFile = JAMP_INSTALLED . 'lookup.json';
+	if (is_file($lookupFile)) {
+		$lookup = json_decode(file_get_contents($lookupFile), true);
+		if (isset($lookup[$scriptName]) && is_file($lookup[$scriptName])) {
+			return $lookup[$scriptName];
+		}
 	}
 
 	return false;
