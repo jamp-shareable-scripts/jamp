@@ -29,6 +29,7 @@ asking for permission, of course!) if they are called while they are not
 installed.
 
 `jamp jitsi`
+
 Generate a random URL for https://meet.jit.si/<random part goes here> so it is
 quick and easy to setup a new video conference room with a hard-to-guess URL.
 
