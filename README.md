@@ -12,7 +12,7 @@ of the work.
 
 `jamp create hello`
 
-Creates a new PHP script, `hello.php` opens it for editing in an editor.
+Creates a new PHP script, `hello.php`, and opens it for editing in an editor.
 
 `jamp hello` is now available as a command as well and it will run whatever
 script you save in the `hello.php` file.
