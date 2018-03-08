@@ -53,6 +53,9 @@ function copyDirectory($from, $to) {
 		elseif ($item->isFile()) {
 			echo "Skipping file because it already exists: $newPath" . PHP_EOL;
 		}
+		else {
+			echo 'Warning, item not copied: ' . $item->getRealPath() . PHP_EOL;
+		}
 		$iterator->next();
 	}
 }
