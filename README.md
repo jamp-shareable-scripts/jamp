@@ -36,5 +36,6 @@ quick and easy to setup a new video conference room with a hard-to-guess URL.
 `jamp zip --password backup.zip`
 
 This command will create a zip archive called backup.zip and add all items in
-the current directory and its subdirectories into it.
-
+the current directory and its subdirectories into it. It will also request a
+password from the user and use this password to encrypt all the files as they
+are added to the zip archive.
