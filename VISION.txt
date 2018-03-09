@@ -1,0 +1,52 @@
+For web developers familiar with PHP in particular, jamp should make write
+simple scripts as quick, easy and painless as possible.
+
+That is the beauty of using PHP for this project. Over the years, it has
+accumulated implementations of a range of libraries, providing a common
+interface to all of them. For instance: PHP can extract files from .tar.bz2,
+.tar.gz, and zip archives, making it possible to create a simple `jamp unzip
+<archive name>` command. Users do not need to remember all the different
+commands for all the different tools for extracting from different archive
+types; let alone install additional software for tasks that can be already by
+handled by software made available as part of PHP.
+
+Similarly, when working with the filesystem: `copy`, `delete` (or `unlink`),
+`file_put_contents`, `file_get_contents`, `file_exists`, `filemtime`,
+`filesize`, `is_dir`, `is_file`, `mkdir`, and `touch` are all useful PHP
+functions that can be used to work with files systems in a relative consistent
+way across different file systems. Very helpful indeed when writing simple
+scripts that are intended to be shared and globally useful.
+
+For the most part, this cross-platform functionality is bundled with PHP
+(perhaps extensions must be enabled for some specific functionality) and comes
+from a relatively trustworthy source: the PHP project itself. This means that
+the scripts themselves can be relatively lightweight, do not require any extra
+installation of software aside from PHP and, should 'just work' when sharing
+them with others who also have PHP available in the command line.
+
+And therein lies the vision for this project: make it extremely easy for web
+developers to share scripts that they can run in environments where PHP is
+available.
+
+This means that many technical articles which are currently centred around a
+series of commands to follow to accomplish some end result could now be turned
+into interactive scripts which can be shared.
+
+To continue the decompression example, now, instead of informing a user of how
+to use tar, 7zip, gunzip, zip and how to work with their file types on different
+operating systems, this could be written into a PHP script which determines the
+file type dynamically and performs the decompression completely transparently
+for the user independent of the operating system.
+
+There could also be scripts performing work similar to `grep` or `find` which
+works on all operating systems; a platform independent copy script, a script
+that goes through the process of setting up a local CA (please be careful with
+this one!), a library of scripts to handle common maintenance tasks in Apache,
+a script that works like `curl` to download items. There could be a library of
+scripts to help manage PHP itself too: performing PHP updates, turning
+extensions on and off via the command line.
+
+So much possibility, so many opportunities to cut down on software installed to
+do tasks that PHP can already do, so many headaches to be saved by offering
+simple scripts for common tasks that work just the same no matter what platform
+they are run on. Hope you are on board!
