@@ -1,5 +1,5 @@
 {
-	"jitsi": "https://github.com/jampperson/jamp-jitsi/archive/master.zip",
-	"unzip": "https://github.com/jampperson/jamp-zip/archive/master.zip",
-	"zip": "https://github.com/jampperson/jamp-zip/archive/master.zip"
+	"jitsi": "https://github.com/jampperson/jamp-jitsi",
+	"unzip": "https://github.com/jampperson/jamp-zip",
+	"zip": "https://github.com/jampperson/jamp-zip"
 }

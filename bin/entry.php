@@ -98,6 +98,13 @@ function jampRunScript($scriptName) {
 	throw new Error("Unable to find $scriptName. See commands with 'jamp show'");
 }
 
+/**
+ * Ask the user if they would like to install a script, and start the install
+ * if they do.
+ * @param string $name The script name.
+ * @param string $location The location of the script's repository.
+ * @param string $runScript A function that will run the script.
+ */
 function offerInstall($name, $location, $runScript) {
 	echo "$name is not installed. However, it is available from:" . PHP_EOL
 	. $location . PHP_EOL . 'Only install scripts from locations you trust.'
@@ -106,53 +113,9 @@ function offerInstall($name, $location, $runScript) {
 	if ($input !== 'y') {
 		return;
 	}
-	if (!is_dir(JAMP_INSTALLED)) {
-		mkdir(JAMP_INSTALLED);
-	}
-	$rand = rand(10000,99999);
-	$tempZip = JAMP_CORE_DATA . $rand . 'install.zip';
-	$tempDir = JAMP_CORE_DATA . $rand . 'install';
-	if (file_exists($tempZip)) {
-		throw new Error("Could not install, temp file already exists: $tempZip");
-	}
-	if (1 > file_put_contents($tempZip, file_get_contents($location))) {
-		throw new Error("Failed to download: $location");
-	}
-	$zip = new ZipArchive;
-	$zip->open($tempZip);
-	$zip->extractTo($tempDir);
-	$zip->close();
-	preg_match('/github.com\\/.*?\\/(.*?)\\/archive\\/.*?\\.zip/',
-	$location, $matches);
-	$repoName = $matches[1];
-	$from = $tempDir . DIRECTORY_SEPARATOR
-	. array_diff(scandir($tempDir),['.','..'])[2];
-	$to = JAMP_INSTALLED . $repoName;
-	rename($from, $to);
-	rmdir($tempDir);
-	unlink($tempZip);
-	addToLookup($to);
-	echo "$name script added." . PHP_EOL;
+	passthru("jamp install $name");
 	$scriptPath = jampGetScriptPath($name);
 	$runScript($scriptPath);
-}
-
-function addToLookup($newDir) {
-	$lookupFile = JAMP_INSTALLED . 'lookup.json';
-	$lookup = is_file($lookupFile)
-	? json_decode(file_get_contents($lookupFile), true)
-	: [];
-	$scriptsDir = $newDir . DIRECTORY_SEPARATOR . 'scripts';
-	$iterator = new DirectoryIterator($scriptsDir);
-	while($iterator->valid()) {
-		$item = $iterator->current();
-		if ($item->isFile()) {
-			$name = pathinfo($item->getBasename(), PATHINFO_FILENAME);
-			$lookup[$name] = $item->getRealPath();
-		}
-		$iterator->next();
-	}
-	file_put_contents($lookupFile, json_encode($lookup));
 }
 
 /**
