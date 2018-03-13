@@ -33,7 +33,7 @@ $certContent = file_get_contents($certUrl);
 if (empty($certContent)) {
 	throw new Error("Unable to download from: $certUrl");
 }
-echo "downloaded $certUrl" . PHP_EOL;
+echo "Downloaded $certUrl" . PHP_EOL;
 
 // Save the content as the new cacert.pem file.
 file_put_contents($certPath, $certContent);
