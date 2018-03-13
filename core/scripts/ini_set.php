@@ -128,6 +128,11 @@ if ($doComment && !preg_match($sameValue, $iniFileContent)) {
 	return;
 }
 
+if (preg_match_all($diffValue, $iniFileContent) > 1) {
+	throw new Error('Unable to support configuration options that can be set '
+	. "multiple times and more than one occurence of '$name' was found.");
+}
+
 // Update an option where a different value is present.
 if (!$doComment && preg_match($diffValue, $iniFileContent)) {
 	$spacing = empty($value) ? '' : ' ';
