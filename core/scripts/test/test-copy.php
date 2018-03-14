@@ -35,7 +35,7 @@ touch($aa1File);
 touch($aa2File);
 
 $aArg = escapeshellarg($aDir);
-$bArg = escapeshellarg($bDir);.
+$bArg = escapeshellarg($bDir);
 
 ob_start();
 passthru("jamp copy $aArg $bArg");
