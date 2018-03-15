@@ -1,5 +1,6 @@
 {
 	"jitsi": "https://github.com/jampperson/jamp-jitsi",
 	"unzip": "https://github.com/jampperson/jamp-zip",
-	"zip": "https://github.com/jampperson/jamp-zip"
+	"zip": "https://github.com/jampperson/jamp-zip",
+	"filter-log": "https://github.com/jampperson/jamp-filter-log"
 }
