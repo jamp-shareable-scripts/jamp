@@ -1,5 +1,22 @@
-# jamp
-Easy to use PHP scripts for cross platform scripting.
+# jamp - Shareable Scripts
+Easy to use and easy to share PHP scripts for cross platform scripting.
+
+## Purpose
+This project aims to make it very easy to create, edit, share and retrieve PHP
+scripts. It should come in handy for web developers and system administrators
+who already have PHP installed on their system and work across multiple
+environments and want to run the same scripts in these various environments. For
+example, develop on a Mac or Windows computer and run a Linux server. It also
+comes in handy for small teams of people who are all using different devices and
+want to be able to share scripts among one another as well. PHP provides a
+common interface to run the same scripts in all these different environments.
+
+Since PHP is bundled with many extensions that accomplish all manner of things,
+such as working with the filesystem, processing images and compressing and
+decompressing files, among many other possibilities, it is possible to
+accomplish many tasks without requiring the installation of additional software,
+possibly from untrusted or unknown sources as may be the case in other scripting
+languages.
 
 ## Examples
 ### Core functions
