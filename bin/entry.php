@@ -2,7 +2,7 @@
 
 /**
  * Sets up the PHP environment and calls the target jamp script.
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

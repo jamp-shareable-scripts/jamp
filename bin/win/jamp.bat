@@ -1,7 +1,7 @@
 @echo off
 
 rem jamp - Easy to use PHP scripts.
-rem Author: jampperson <https://github.com/jampperson>
+rem Author: jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
 rem License: GPL-2.0
 
 rem Get the JAMP_BASE as shown by

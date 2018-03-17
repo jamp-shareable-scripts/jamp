@@ -8,7 +8,7 @@
  * does not exist, then a message will be displayed showing the user the path so
  * they can open it manually and how to set a default editor for jamp.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

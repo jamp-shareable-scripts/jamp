@@ -10,7 +10,7 @@
  * This command will overwrite a previous version of the same file. Information
  * about the source of the file: https://curl.haxx.se/docs/caextract.html
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

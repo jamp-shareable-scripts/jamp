@@ -7,7 +7,7 @@
  *
  *   -p,--print-path Display the path to the script instead of opening the file.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

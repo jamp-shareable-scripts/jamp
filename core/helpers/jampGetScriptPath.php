@@ -4,7 +4,7 @@
  * Gets the path for the give script name if it exists or returns false if the
  * script file cannot be found.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

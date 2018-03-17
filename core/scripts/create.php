@@ -14,7 +14,7 @@
  *   -g,--global Create the new script in the core folder, included by git
  *   -s,--silent Prevent the new script automatically opening in a text editor
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

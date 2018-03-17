@@ -3,7 +3,7 @@
 /**
  * Test that the usage script works as expected.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 
@@ -14,7 +14,7 @@ PHP_EOL
 . PHP_EOL
 . 'Usage: jamp usage <script name>' . PHP_EOL
 . PHP_EOL
-. '@author  jampperson <https://github.com/jampperson>' . PHP_EOL
+. '@author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>' . PHP_EOL
 . '@license GPL-2.0' . PHP_EOL . PHP_EOL;
 ob_start();
 system('jamp usage usage');

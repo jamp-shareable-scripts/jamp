@@ -20,7 +20,7 @@
  * configuration options that might have multiple values; for example, it
  * prevents one accidentally commenting out all the extension = ... values.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

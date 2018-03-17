@@ -3,7 +3,7 @@
 /**
  * Clarifies a ZipArchive::open error code.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

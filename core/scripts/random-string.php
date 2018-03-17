@@ -10,7 +10,7 @@
  *   --length=n Generate a string of length n, default 64
  * 
  * @todo Fix off by one error in length of output.
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

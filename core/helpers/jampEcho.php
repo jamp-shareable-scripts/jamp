@@ -10,7 +10,7 @@
  * line for all output apart from the very last line, then, for the very last
  * line of output, use jampEcho;
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 

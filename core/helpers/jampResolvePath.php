@@ -4,7 +4,7 @@
  * Resolves a relative path. Will return the resolved path even if it does not
  * exist.
  * 
- * @author  jampperson <https://github.com/jampperson>
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 
