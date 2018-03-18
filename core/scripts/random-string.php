@@ -1,54 +1,72 @@
 <?php
 
 /**
- * Generates a random string.
+ * Generates a random string of printable ASCII characters.
  *
  * Usage: jamp random-string [options]
+ *    jamp random-string
+ *    jamp random-string --all
+ *    jamp random-string --letters --numbers --symbols
+ *    jamp random-string --length n
+ *
+ *   -A,--all      Use all printable ASCII characters.
+ *   -L,--letters  Use letters a-zA-Z in the string.
+ *   -N,--numbers  Use numbers 0-9 in the string.
+ *   -l,--length=n Generate a string of length n, default 64.
  * 
- *   --numbers  Use numbers 0-9 in the string
- *   --letters  Use letters a-zA-Z in the string
- *   --length=n Generate a string of length n, default 64
+ * When no options are specified, the jamp random-string command will generate
+ * a string of random letters and numbers with a length of 64 characters.
  * 
- * @todo Fix off by one error in length of output.
  * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 
-jampUse(['jampEcho']);
+jampUse('jampEcho');
 
-$opts = getopt('', ['letters', 'numbers', 'length:']);
-$charPool = '';
-$letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// Get the arguments passed to the script.
+$opts = getopt('ALNSl:', ['all', 'letters', 'numbers', 'symbols', 'length:']);
+
+// Set up the possible character ranges to use.
+$letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 $numbers = '0123456789';
+$symbols = ' !"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
+$defaultLength = 64;
 
-// If requested, include letters in the string.
-if (isset($opts['letters'])) {
-	$charPool .= $letters;
+// Determine which type of characters are actually being used.
+$useAll = isset($opts['A']) || isset($opts['all']);
+$useLetters = isset($opts['L']) || isset($opts['letters']) || $useAll;
+$useNumbers = isset($opts['N']) || isset($opts['numbers']) || $useAll;
+$useSymbols = isset($opts['S']) || isset($opts['symbols']) || $useAll;
+
+// Build a string containing the characters that may be included in the output.
+$characterRange = '';
+if ($useLetters) {
+	$characterRange .= $letters;
+}
+if ($useNumbers) {
+	$characterRange .= $numbers;
+}
+if ($useSymbols) {
+	$characterRange .= $symbols;
 }
 
-// If requested, include numbers in the string.
-if (isset($opts['numbers'])) {
-	$charPool .= $numbers;
+if (empty($characterRange)) {
+	$characterRange .= $letters . $numbers;
 }
 
-// If no character types are provided as options, default to numbers and
-// letters.
-if (empty($charPool)) {
-	$charPool .= $numbers . $letters;
-}
+// Determine the length of the output.
+$lengthRaw = empty($opts['length'])
+? (empty($opts['l']) ? $defaultLength : $opts['l'])
+: $opts['length'];
+$length = is_numeric($lengthRaw) ? (int)$lengthRaw : 64;
 
-// Use the length given in the options; if none is provided, use a length of 64.
-$length = isset($opts['length']) && is_numeric($opts['length']) 
-? (int)$opts['length']
-: 64;
-
-// The max index of the charPool.
-$max = strlen($charPool);
+// The max index of the character range.
+$max = strlen($characterRange) - 1;
 
 // Randomly add a character to the string, one at a time.
 $output = '';
 for ($i = 0; $i < $length; $i++) {
-	$output .= substr($charPool, random_int(0, $max), 1);
+	$output .= substr($characterRange, random_int(0, $max), 1);
 }
 
 jampEcho($output);
