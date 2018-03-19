@@ -6,7 +6,7 @@
 
 # Get the base directory as shown by
 # https://stackoverflow.com/a/246128
-export JAMP_BASE "$( dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )/"
+export JAMP_BASE="$( dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )/"
 
 # Get the name of the script to run.
 export JAMP_SCRIPT=$1
