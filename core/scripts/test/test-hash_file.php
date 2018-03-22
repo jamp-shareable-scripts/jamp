@@ -30,6 +30,7 @@ $message1 = exec("jamp hash_file -c $checksumArg $algoArg $fileArg");
 $expectMessage1 = 'Checksum matches :)';
 test($expectMessage1 === $message1, 'Good match message is shown');
 
+// Check that a message is shown for invalid checksums.
 $message2 = exec("jamp hash_file -c \"wrong hash\" $algoArg $fileArg");
 $expectMessage2 = 'Checksum does not match :(';
 test($expectMessage2 === $message2, 'Non-match message is shown');
