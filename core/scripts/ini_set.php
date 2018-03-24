@@ -1,11 +1,14 @@
 <?php
+
 /**
  * Updates an option in the php.ini file with a new value.
  * 
- * Usage: jamp ini_set <option name> <option value>
- *    jamp ini_set -c|--comment <option name> <option value>
- *
- *   -c,--comment Turns a configuration line into a comment.
+ * Usage: jamp ini_set [-f|--file=<file path>] <option name> <option value>
+ *    jamp ini_set [...opts] -c|--comment <option name> <option value>
+ * 
+ *   -c,--comment          Turns a configuration line into a comment.
+ *   -f,--file=<file path> The path to the ini file to update. Default: php.ini
+ *                         path.
  * 
  * If updating an option without providing an option value, that option will be
  * set to an empty value.
@@ -26,8 +29,12 @@
 
 jampUse('jampEcho');
 
-$opts = getopt('c', ['--comment'], $lastArg);
+$opts = getopt('cf:', ['comment','file:'], $lastArg);
 $doComment = isset($opts['c']) || isset($opts['comment']);
+$fileIsSet = isset($opts['f']) || isset($opts['file']);
+$fileRaw = isset($opts['f']) ? $opts['f'] : (
+	isset($opts['file']) ? $opts['file'] : ''
+);
 
 if (empty($argv[$lastArg])) {
 	passthru('jamp usage ini_set');
@@ -68,7 +75,11 @@ $valueArg = preg_quote($value);
  * Path to the php.ini file.
  * @var string
  */
-$phpIni = php_ini_loaded_file();
+$phpIni = $fileIsSet ? $fileRaw : php_ini_loaded_file();
+
+if (!is_file($phpIni)) {
+	throw new Error("Ini file does not exist: $phpIni");
+}
 
 /**
  * Current contents of the php.ini file.
@@ -77,7 +88,7 @@ $phpIni = php_ini_loaded_file();
 $iniFileContent = file_get_contents($phpIni);
 
 // No sense continuing if there's no ini file.
-if (!$iniFileContent) {
+if ($iniFileContent === false) {
 	throw new Error("Could not read php.ini file: $phpIni");
 }
 
