@@ -20,3 +20,12 @@ $expected = PHP_EOL . '; Value added via jamp' . PHP_EOL . 'anoption = '
 
 test($expected === $contents, 'Option should be added.');
 
+test(is_file("$testIniPath.bkp"), 'Backup file should be created.');
+
+test(
+	empty(file_get_contents("$testIniPath.bkp")),
+	'Backup is old file version'
+);
+
+unlink("$testIniPath.bkp");
+unlink($testIniPath);
