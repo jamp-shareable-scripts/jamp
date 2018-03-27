@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Test that the ini_set script works as expected.
+ * 
+ * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
+ * @license GPL-2.0
+ */
+
 $testIniName = 'testini_set' . rand(10000,99999) . '.ini';
 $testIniPath = JAMP_CORE_DATA . $testIniName;
 
