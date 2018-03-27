@@ -39,6 +39,12 @@ $contents2 = file_get_contents($testIniPath);
 $expected2 = preg_replace('/= anoptionvalue/', '= anewvalue', $expected1);
 test($expected2 === $contents2, 'Existing value should updated.');
 
+// Test that backup was also updated.
+test(
+	file_get_contents("$testIniPath.bkp") === $expected1,
+	'Backup should be updated when option value is updated.'
+);
+
 // Cleanup.
 unlink("$testIniPath.bkp");
 unlink($testIniPath);
