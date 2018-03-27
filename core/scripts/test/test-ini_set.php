@@ -19,10 +19,10 @@ touch($testIniPath);
 // Test the option is added if it doesn't exist in the ini file already.
 $pathArg = escapeshellarg($testIniPath);
 exec("jamp ini_set -f $pathArg anoption anoptionvalue");
-$contents = file_get_contents($testIniPath);
-$expected = PHP_EOL . '; Value added via jamp' . PHP_EOL . 'anoption = '
+$contents1 = file_get_contents($testIniPath);
+$expected1 = PHP_EOL . '; Value added via jamp' . PHP_EOL . 'anoption = '
 . 'anoptionvalue' . PHP_EOL;
-test($expected === $contents, 'Option should be added.');
+test($expected1 === $contents1, 'Option should be added.');
 
 // Test that a backup file is created when an ini file is changed.
 test(is_file("$testIniPath.bkp"), 'Backup file should be created.');
@@ -32,6 +32,12 @@ test(
 	empty(file_get_contents("$testIniPath.bkp")),
 	'Backup is old file version'
 );
+
+// Test that an option is updated if it's already in the ini file.
+exec("jamp ini_set -f $pathArg anoption anewvalue");
+$contents2 = file_get_contents($testIniPath);
+$expected2 = preg_replace('/= anoptionvalue/', '= anewvalue', $expected1);
+test($expected2 === $contents2, 'Existing value should updated.');
 
 // Cleanup.
 unlink("$testIniPath.bkp");
