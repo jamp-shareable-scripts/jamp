@@ -8,6 +8,8 @@
  *    jamp random-string --all
  *    jamp random-string --letters --numbers --symbols
  *    jamp random-string --length n
+ *    jamp random-string --not "<hex codes of chars to remove, e.g.
+ *                              \x40\x60\x2f>"
  *
  *   -A,--all      Use all printable ASCII characters.
  *   -L,--letters  Use letters a-zA-Z in the string.
@@ -24,7 +26,8 @@
 jampUse('jampEcho');
 
 // Get the arguments passed to the script.
-$opts = getopt('ALNSl:', ['all', 'letters', 'numbers', 'symbols', 'length:']);
+$opts = getopt('ALNSl:', ['all', 'letters', 'numbers', 'symbols',
+'length:', 'not:']);
 
 // Set up the possible character ranges to use.
 $letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -37,6 +40,7 @@ $useAll = isset($opts['A']) || isset($opts['all']);
 $useLetters = isset($opts['L']) || isset($opts['letters']) || $useAll;
 $useNumbers = isset($opts['N']) || isset($opts['numbers']) || $useAll;
 $useSymbols = isset($opts['S']) || isset($opts['symbols']) || $useAll;
+$avoidCharCodes = empty($opts['not']) ? null : $opts['not'];
 
 // Build a string containing the characters that may be included in the output.
 $characterRange = '';
@@ -52,6 +56,21 @@ if ($useSymbols) {
 
 if (empty($characterRange)) {
 	$characterRange .= $letters . $numbers;
+}
+
+$hexPattern = "/\\\\x([0-9a-z]{2})/";
+if ($avoidCharCodes && preg_match_all($hexPattern, $avoidCharCodes, $matches)) {
+	$avoidChars = '';
+	foreach ($matches[1] as $charHexCode) {
+		$avoidChars .= chr(hexdec($charHexCode));
+	}
+	$charsArg = preg_quote($avoidChars, '/');
+	$pattern = "/[$charsArg]/";
+	$characterRange = preg_replace($pattern, '', $characterRange);
+}
+
+if (empty($characterRange)) {
+	throw new Error('Invalid character range');
 }
 
 // Determine the length of the output.
