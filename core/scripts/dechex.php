@@ -11,4 +11,6 @@
  * @license GPL-2.0
  */
 
-echo dechex((int) $argv[1]);
+jampUse('jampEcho');
+
+jampEcho(dechex((int) $argv[1]));
