@@ -8,13 +8,16 @@
  *    jamp random-string --all
  *    jamp random-string --letters --numbers --symbols
  *    jamp random-string --length n
- *    jamp random-string --not "<hex codes of chars to remove, e.g.
- *                              \x40\x60\x2f>"
+ *    jamp random-string -A --not 
+ *    jamp random-string --mysqlpw
  *
- *   -A,--all      Use all printable ASCII characters.
- *   -L,--letters  Use letters a-zA-Z in the string.
- *   -N,--numbers  Use numbers 0-9 in the string.
- *   -l,--length=n Generate a string of length n, default 64.
+ *   -A,--all          Use all printable ASCII characters.
+ *   -L,--letters      Use letters a-zA-Z in the string.
+ *   -N,--numbers      Use numbers 0-9 in the string.
+ *   -l,--length=n     Generate a string of length n, default 64.
+ *   --not <hex codes> List hex codes of chars to remove, e.g.\x40\x60\x2f
+ *   --mysqlpw         Follow mysql password rules (ASCII printable chars
+ *                     excluding characters @, /, and '.
  * 
  * When no options are specified, the jamp random-string command will generate
  * a string of random letters and numbers with a length of 64 characters.
@@ -27,20 +30,21 @@ jampUse('jampEcho');
 
 // Get the arguments passed to the script.
 $opts = getopt('ALNSl:', ['all', 'letters', 'numbers', 'symbols',
-'length:', 'not:']);
+'length:', 'not:', 'mysqlpw']);
 
 // Set up the possible character ranges to use.
 $letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 $numbers = '0123456789';
 $symbols = ' !"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
-$defaultLength = 64;
 
 // Determine which type of characters are actually being used.
-$useAll = isset($opts['A']) || isset($opts['all']);
+$doMysqlPw = isset($opts['mysqlpw']);
+$useAll = isset($opts['A']) || isset($opts['all']) || $doMysqlPw;
 $useLetters = isset($opts['L']) || isset($opts['letters']) || $useAll;
 $useNumbers = isset($opts['N']) || isset($opts['numbers']) || $useAll;
 $useSymbols = isset($opts['S']) || isset($opts['symbols']) || $useAll;
 $avoidCharCodes = empty($opts['not']) ? null : $opts['not'];
+$defaultLength = $doMysqlPw ? 16 : 64;
 
 // Build a string containing the characters that may be included in the output.
 $characterRange = '';
@@ -67,6 +71,9 @@ if ($avoidCharCodes && preg_match_all($hexPattern, $avoidCharCodes, $matches)) {
 	$charsArg = preg_quote($avoidChars, '/');
 	$pattern = "/[$charsArg]/";
 	$characterRange = preg_replace($pattern, '', $characterRange);
+}
+if ($doMysqlPw) {
+	$characterRange = preg_replace("/[@'\/]/", '', $characterRange);
 }
 
 if (empty($characterRange)) {
