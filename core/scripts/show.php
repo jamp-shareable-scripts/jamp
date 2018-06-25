@@ -10,21 +10,20 @@
 
 jampUse('jampEcho');
 
-$local = new FilesystemIterator(
+$local = is_dir(JAMP_BASE . 'local') ? new FilesystemIterator(
 	JAMP_BASE . 'local' . DIRECTORY_SEPARATOR . 'scripts',
 	FilesystemIterator::SKIP_DOTS | FilesystemIterator::NEW_CURRENT_AND_KEY
-);
+) : [];
 
 $core = new FilesystemIterator(
 	JAMP_BASE . 'core' . DIRECTORY_SEPARATOR . 'scripts',
 	FilesystemIterator::SKIP_DOTS | FilesystemIterator::NEW_CURRENT_AND_KEY
 );
 
-$installed = new FilesystemIterator(
+$installed = is_dir(JAMP_BASE . 'installed') ? new FilesystemIterator(
 	JAMP_BASE . 'installed',
 	FilesystemIterator::SKIP_DOTS
-);
-
+) : [];
 
 echo 'Local scripts' . PHP_EOL;
 foreach ($local as $file => $info) {
