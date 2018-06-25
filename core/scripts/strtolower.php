@@ -11,4 +11,5 @@
  * @license GPL-2.0
  */
 
-echo strtolower($argv[1]);
+$input = isset($argv[1]) ? $argv[1] : fgets(STDIN);
+echo strtolower($input);
