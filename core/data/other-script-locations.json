@@ -2,5 +2,6 @@
 	"jitsi": "https://github.com/jamp-shareable-scripts/jamp-jitsi",
 	"unzip": "https://github.com/jamp-shareable-scripts/jamp-zip",
 	"zip": "https://github.com/jamp-shareable-scripts/jamp-zip",
-	"filter-log": "https://github.com/jamp-shareable-scripts/jamp-filter-log"
+	"filter-log": "https://github.com/jamp-shareable-scripts/jamp-filter-log",
+	"create-cert": "https://github.com/jamp-shareable-scripts/jamp-create-cert/"
 }
