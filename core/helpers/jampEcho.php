@@ -14,17 +14,10 @@
  * @license GPL-2.0
  */
 
-jampUse('jampIsWindows');
-
 /**
  * Echoes $output in a uniform way across platforms.
  * @param string $output The string to echo.
  */
 function jampEcho($output) {
-	if (jampIsWindows()) {
-		echo $output;
-	}
-	else {
-		echo $output . PHP_EOL;
-	}
+	echo $output . PHP_EOL;
 }
