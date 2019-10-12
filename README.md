@@ -1,6 +1,16 @@
 # jamp - Shareable Scripts
 Easy to use and easy to share PHP scripts for cross platform scripting.
 
+## Setup
+### Prerequisites
+* [PHP](https://www.php.net/) is installed and available in the PATH.
+
+### Installation
+
+1. Clone the project from https://github.com/jamp-shareable-scripts/jamp
+1. Add the appropriate jamp bin path to your PATH: `jamp/bin/(your os)`
+1. Open a new cli and test with `jamp show` to see available commands
+
 ## Purpose
 This project aims to make it very easy to create, edit, share and retrieve PHP
 scripts. It should come in handy for web developers and system administrators
