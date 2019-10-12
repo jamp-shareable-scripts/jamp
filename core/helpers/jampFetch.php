@@ -7,6 +7,8 @@
  * @license GPL-2.0
  */
 
+jampUse('jampEcho');
+
 /**
  * Returns a resource from the given $url.
  * @param  string $url The URL of the resource.
@@ -34,6 +36,11 @@ function jampFetch($url, $accept = 'text/html') {
 	$curlError = curl_error($handle);
 	curl_close($handle);
 	if ($raw === false) {
+		if (strpos($curlError, "SSL certificate problem: unable to get local issuer certificate") !== FALSE) {
+			jampEcho("It may be possible to resolve the following error by running:");
+			jampEcho("jamp get-cafile");
+			jampEcho("This will download the cacert.pem file from https://curl.haxx.se/ca/cacert.pem");
+		}
 		throw new Error($curlError);
 	}
 	return $raw;
