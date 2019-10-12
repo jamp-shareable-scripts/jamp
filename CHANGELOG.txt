@@ -1,3 +1,7 @@
+0.0.2 - 2019.10.12
+	* Append new lines in jampEcho.
+	* Informative message when encountering curl certificate errors.
+
 0.0.1 - 2019.10.12
 	* Update README.md with set up steps.
 
