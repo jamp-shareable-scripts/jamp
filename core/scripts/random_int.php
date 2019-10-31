@@ -1,6 +1,6 @@
 <?php
 /**
- * Generate a random number using random_int.
+ * Generate a random number using PHP's random_int.
  * 
  * Usage: jamp random_int <minimum> <maximum>
  * 
@@ -9,6 +9,11 @@
  */
 
 jampUse('jampEcho');
+
+if (!isset($argv[1], $argv[2])) {
+	passthru('jamp usage random_int');
+	exit;
+}
 
 $min = 0;
 $max = PHP_INT_MAX;
