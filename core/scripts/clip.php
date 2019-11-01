@@ -21,4 +21,4 @@ $contentForClipboard = str_replace(
 
 $cmd = 'powershell -Command  "& {echo \'' . $contentForClipboard
     . '\' | Set-Clipboard -Value {$_.Trim()}}"';
-exec($cmd);
+pclose(popen('start "" /B ' . $cmd, 'r'));
