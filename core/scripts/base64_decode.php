@@ -5,23 +5,19 @@
  * Works as a wrapper for PHP's base64_decode function.
  * 
  * Usage: jamp base64_decode <input>
+ *        <input> | jamp base64_decode
  *   -d,--detect-encoding Detect multibyte encoding.
  * 
  * @author  jamp-shareable-scripts <https://github.com/jamp-shareable-scripts>
  * @license GPL-2.0
  */
 
-jampUse('jampEcho');
+jampUse(['jampArgOrStdIn', 'jampEcho']);
 
 $opts = getopt('d', ['detect-encoding'], $lastArg);
 $detectEncoding = isset($opts['d']) || isset($opts['detect-encoding']);
-
-if (empty($argv[$lastArg])) {
-	passthru('jamp usage base64_decode');
-	exit;
-}
-
-$raw = base64_decode($argv[$lastArg]);
+$input = trim(jampArgOrStdIn($lastArg));
+$raw = base64_decode($input);
 if (!$detectEncoding) {
 	return jampEcho($raw);
 }
