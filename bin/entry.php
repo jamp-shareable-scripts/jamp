@@ -135,7 +135,21 @@ function jampDisplayError($error) {
 				}
 			});
 		}
-		$argsString = is_array($argsCopy) ? implode(',', $argsCopy) : '';
-		echo "$file:$line $function($argsString)" . PHP_EOL;
+		$stringArgs = [];
+		if (is_array($argsCopy)) {
+			foreach ($argsCopy as $argItem) {
+				if (is_string($argItem)) {
+					array_push($stringArgs, $argItem);
+				}
+			}
+		}
+		$file = $file ?? '';
+		$line = $line ?? '';
+		$function = $function ?? '';
+		$argsString = implode(',', $stringArgs);
+		if ($file && $line) {
+			echo "$file:$line $function($argsString)" . PHP_EOL;
+		}
+		echo "$function($argsString)" . PHP_EOL;
 	}
 }
