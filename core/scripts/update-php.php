@@ -5,7 +5,7 @@
  * (e.g. 7.3.x -> 7.3.y) and only updating the PHP installation that is used by
  * jamp and only on Windows.
  * 
- * Usage: jamp update-php
+ * Usage: jamp update-php [nts|ts]
  */
 jampUse(['jampIsWindows', 'jampEcho']);
 
@@ -18,14 +18,27 @@ if (!is_dir(JAMP_BASE)) {
 }
 
 // Check if the latest version of PHP is already installed.
-$downloadLink = getNewPatchDownloadLink();
+$currentThreadSafetyType = PHP_ZTS ? 'ts' : 'nts';
+$requestedThreadSafetyType = isset($argv[1]) ? $argv[1]
+	: $currentThreadSafetyType;
+if (!(
+	$requestedThreadSafetyType === 'nts' ||
+	$requestedThreadSafetyType === 'ts'
+)) {
+	throw new Exception('Only "nts" and "ts" are accepted thread safety values.');
+}
+$downloadLink = getNewPatchDownloadLink($requestedThreadSafetyType);
 $phpMinorVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 if (!preg_match('/php-(\d+\.\d+\.\d+)/', $downloadLink, $matches)) {
 	throw new Exception('Could not extract PHP version from download link.');
 }
-if ($matches[1] === PHP_VERSION) {
-	jampEcho('You already have the latest patch for PHP ' . $phpMinorVersion
-		. ' (' . PHP_VERSION . ').');
+if (
+	($matches[1] === PHP_VERSION) &&
+	($currentThreadSafetyType === $requestedThreadSafetyType)
+) {
+	jampEcho('You already have the latest patch, PHP ' . PHP_VERSION . ' ('
+		. ($requestedThreadSafetyType === 'ts' ? 'Thread Safe' : 'Non-Thread Safe')
+		. ').');
 	exit();
 }
 $newPhpVersion = $matches[1];
@@ -36,9 +49,12 @@ if (!is_dir($jampTempDir)) {
 	mkdir($jampTempDir);
 }
 $targetFile = $jampTempDir . DIRECTORY_SEPARATOR . basename($downloadLink);
-echo('Planning to upgrade PHP from ' . PHP_VERSION . ' to ' . $newPhpVersion
-	. ' from:' . PHP_EOL . $downloadLink . PHP_EOL . '(Downloading to: '
-	. $targetFile . ')' . PHP_EOL);
+echo('Planning to upgrade PHP from ' . PHP_VERSION . ' ('
+	. ($currentThreadSafetyType === 'ts' ? 'Thread Safe' : 'Non-Thread Safe')
+	. ') to ' . $newPhpVersion . ' ('
+	. ($requestedThreadSafetyType === 'ts' ? 'Thread Safe' : 'Non-Thread Safe')
+	. ') from:' . PHP_EOL . $downloadLink . PHP_EOL
+	. '(Downloading to: ' . $targetFile . ')' . PHP_EOL);
 $input = readline('Proceed? [y/n]: ');
 if (($input !== 'y') && ($input !== 'Y')) {
 	exit();
@@ -54,18 +70,18 @@ if (is_file($targetFile)) {
 }
 
 // Unzip the PHP archive file.
-echo ('Unzipping...' . PHP_EOL);
-$zip = new ZipArchive;
-$zipOpened = $zip->open($targetFile);
-if ($zipOpened !== TRUE) {
-	throw new Exception('Could not open zip file: ' . $targetFile . '. Error '
-		. 'code: ' . $zipOpened);
-}
 $unzipDir = $jampTempDir . DIRECTORY_SEPARATOR . basename($targetFile, '.zip');
 if (is_dir($unzipDir)) {
 	echo('Skipping extraction, directory already exists: ' . $unzipDir . PHP_EOL);
 }
 else {
+	echo ('Unzipping...' . PHP_EOL);
+	$zip = new ZipArchive;
+	$zipOpened = $zip->open($targetFile);
+	if ($zipOpened !== TRUE) {
+		throw new Exception('Could not open zip file: ' . $targetFile . '. Error '
+			. 'code: ' . $zipOpened);
+	}
 	mkdir($unzipDir);
 	$zip->extractTo($unzipDir);
 }
@@ -73,7 +89,7 @@ else {
 $phpDir = dirname(PHP_BINARY);
 $backupPhpDir = dirname($phpDir) . DIRECTORY_SEPARATOR . basename($phpDir) . '-'
 . (new DateTime())->format('Y-m-d') . '-backup';
-echo('Swapping out old PHP directory...');
+echo('Swapping out old PHP directory...' . PHP_EOL);
 rename($phpDir, $backupPhpDir);
 rename($unzipDir, $phpDir);
 $oldPhpIniPath = $backupPhpDir . DIRECTORY_SEPARATOR . 'php.ini';
@@ -99,8 +115,9 @@ else {
 	}
 }
 
-echo('PHP has been updated to ' . $newPhpVersion . '. Please compare the '
-. 'following files to check for config updates:' . PHP_EOL
+echo('PHP has been updated to ' . $newPhpVersion . ' ('
+. ($requestedThreadSafetyType === 'ts' ? 'Thread Safe' : 'Non-Thread Safe')
+. '). Please compare the following files to check for config updates:' . PHP_EOL
 . dirname($newPhpIniPath) . DIRECTORY_SEPARATOR . 'php.ini-development'
 . PHP_EOL . $newPhpIniPath . PHP_EOL);
 $showFolderAnswer = readline('Show the downloaded file in Explorer? [y/n]: ');
@@ -114,7 +131,7 @@ if ($showFolderAnswer === 'y' || $showFolderAnswer === 'Y') {
  *
  * @return String Url to download latest PHP patch.
  */
-function getNewPatchDownloadLink()
+function getNewPatchDownloadLink($threadSafetyType)
 {
 	$currentPHPMinorVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 	$downloadPageHtml = file_get_contents('https://windows.php.net/download');
@@ -133,7 +150,7 @@ function getNewPatchDownloadLink()
 	$dom->loadHTML($downloadPageHtml);
 	restore_error_handler();
 	$docXPath = new DOMXPath($dom);
-	$threadSafeStatus = PHP_ZTS ? '' : '-nts';
+	$threadSafeStatus = ($threadSafetyType === 'ts') ? '' : '-nts';
 	$architecture = getArchitecture();
 	foreach ($docXPath->query("//div[@class='info entry']") as $minorVersionSection) {
 		$headingNodes = $minorVersionSection->getElementsByTagName('h3');
