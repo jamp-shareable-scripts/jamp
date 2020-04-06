@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Updates PHP installation. Currently only supports updating PHP patch versions
- * (e.g. 7.3.x -> 7.3.y) and only updating the PHP installation that is used by
- * jamp and only on Windows.
+ * Installs Apache. Currently only supported on Windows.
  * 
  * Usage: jamp install-apache
  */
