@@ -17,18 +17,28 @@ if (!is_dir(JAMP_BASE)) {
 	throw new Exception('Unable to find JAMP_BASE directory.');
 }
 
-// Check if the latest version of PHP is already installed.
+$opts = getopt('t:v:', ['thread-safety:', 'version-type:']);
 $currentThreadSafetyType = PHP_ZTS ? 'ts' : 'nts';
-$requestedThreadSafetyType = isset($argv[1]) ? $argv[1]
-	: $currentThreadSafetyType;
+$requestedThreadSafetyType = $opts['t'] ?? $opts['thread-safety'] ??
+$currentThreadSafetyType;
+$versionType = $opts['v'] ?? $opts['version-type'] ?? 'patch';
+
+// Check if the latest version of PHP is already installed.
 if (!(
 	$requestedThreadSafetyType === 'nts' ||
 	$requestedThreadSafetyType === 'ts'
 )) {
 	throw new Exception('Only "nts" and "ts" are accepted thread safety values.');
 }
-$downloadLink = getNewPatchDownloadLink($requestedThreadSafetyType);
-$phpMinorVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+if (!(
+	$versionType === 'minor' ||
+	$versionType === 'patch'
+)) {
+	throw new Exception(
+		'Only "minor" and "patch" and accepted version type values.'
+	);
+}
+$downloadLink = getDownloadLink($requestedThreadSafetyType, $versionType);
 if (!preg_match('/php-(\d+\.\d+\.\d+)/', $downloadLink, $matches)) {
 	throw new Exception('Could not extract PHP version from download link.');
 }
@@ -63,7 +73,7 @@ if (is_file($targetFile)) {
 	echo ('Skipping download. File exists.' . PHP_EOL);
 } else {
 	echo ('Downloading...' . PHP_EOL);
-	ini_set('user_agent', 'PHP ' . $phpMinorVersion . 'CLI');
+	ini_set('user_agent', 'PHP CLI');
 	if (file_put_contents($targetFile, fopen($downloadLink, 'r')) === FALSE) {
 		throw new Exception('Error downloading file: ' . $downloadLink);
 	}
@@ -88,7 +98,7 @@ else {
 
 $phpDir = dirname(PHP_BINARY);
 $backupPhpDir = dirname($phpDir) . DIRECTORY_SEPARATOR . basename($phpDir) . '-'
-. (new DateTime())->format('Y-m-d') . '-backup';
+. (new DateTime())->format('Y-m-d-H-i-s') . '-backup';
 echo('Swapping out old PHP directory...' . PHP_EOL);
 rename($phpDir, $backupPhpDir);
 rename($unzipDir, $phpDir);
@@ -131,9 +141,14 @@ if ($showFolderAnswer === 'y' || $showFolderAnswer === 'Y') {
  *
  * @return String Url to download latest PHP patch.
  */
-function getNewPatchDownloadLink($threadSafetyType)
+function getDownloadLink($threadSafetyType, $versionType)
 {
-	$currentPHPMinorVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+	$phpMinorVersion = PHP_MINOR_VERSION;
+	if ($versionType === 'minor') {
+		$phpMinorVersion += 1;
+	}
+	// if it is $versionType === 'patch', then stay on the same minor version.
+	$targetPHPMinorVersion = PHP_MAJOR_VERSION . '.' . $phpMinorVersion;
 	$downloadPageHtml = file_get_contents('https://windows.php.net/download');
 	$dom = new DOMDocument();
 	// Ignore warnings and notices when loading HTML (the PHP page had some
@@ -152,6 +167,9 @@ function getNewPatchDownloadLink($threadSafetyType)
 	$docXPath = new DOMXPath($dom);
 	$threadSafeStatus = ($threadSafetyType === 'ts') ? '' : '-nts';
 	$architecture = getArchitecture();
+	$targetLinkPattern = '/https:\/\/windows\.php\.net\/downloads\/releases\/php-'
+	. $targetPHPMinorVersion . '.\d+' . $threadSafeStatus
+	. '-Win\d+-VC\d+-' . $architecture . '\.zip/i';
 	foreach ($docXPath->query("//div[@class='info entry']") as $minorVersionSection) {
 		$headingNodes = $minorVersionSection->getElementsByTagName('h3');
 		if ($headingNodes->length === 0) {
@@ -160,7 +178,7 @@ function getNewPatchDownloadLink($threadSafetyType)
 		if ($headingNodes->length > 1) {
 			throw new Exception('More than one heading found.');
 		}
-		if (strpos($headingNodes[0]->nodeValue, $currentPHPMinorVersion) === FALSE) {
+		if (strpos($headingNodes[0]->nodeValue, $targetPHPMinorVersion) === FALSE) {
 			continue;
 		}
 		foreach ($minorVersionSection->getElementsByTagName('a') as $a) {
@@ -168,18 +186,13 @@ function getNewPatchDownloadLink($threadSafetyType)
 			if (substr($url, 0, 1) === '/') {
 				$url = 'https://windows.php.net' . $url;
 			}
-			if (preg_match(
-				'/https:\/\/windows\.php\.net\/downloads\/releases\/php-'
-					. $currentPHPMinorVersion . '.\d+' . $threadSafeStatus
-					. '-Win\d+-VC\d+-' . $architecture . '\.zip/',
-				$url
-			)) {
+			if (preg_match($targetLinkPattern, $url)) {
 				return $url;
 			}
 		}
 	}
 	throw new Exception('Could not find download links for PHP version: '
-		. $currentPHPMinorVersion);
+		. $targetPHPMinorVersion);
 }
 
 /**
