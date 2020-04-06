@@ -5,6 +5,6 @@
 	"filter-log": "https://github.com/jamp-shareable-scripts/jamp-filter-log",
 	"create-cert": "https://github.com/jamp-shareable-scripts/jamp-create-cert",
 	"temp-port": "https://github.com/jamp-shareable-scripts/jamp-temp-port",
-	"shiftone-encode": "https://github.com/jamp-shareable-scripts/shiftone-encode",
-	"shiftone-decode": "https://github.com/jamp-shareable-scripts/shiftone-encode"
+	"shiftone-encode": "https://github.com/jamp-shareable-scripts/jamp-shiftone-encode",
+	"shiftone-decode": "https://github.com/jamp-shareable-scripts/jamp-shiftone-encode"
 }
