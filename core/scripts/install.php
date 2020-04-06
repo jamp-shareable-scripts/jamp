@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Installs a jamp script.
+ * Installs a jamp script library.
  * 
  * Usage: jamp install <library>
  * 
@@ -21,6 +21,65 @@ if (!extension_loaded('curl')) {
 	throw new Error('PHP\'s curl extension is required to install jamp '
 	. 'scripts automatically, please enable it. ' . PHP_EOL
 	. 'See: https://secure.php.net/manual/en/curl.installation.php');
+}
+
+
+/**
+ * Saves the location of the scripts in the given directory.
+ * @newDir string The directory the scripts are saved in.
+ */
+function addToLookup($newDir) {
+	$lookupFile = JAMP_INSTALLED . 'lookup.json';
+	$lookup = is_file($lookupFile)
+	? json_decode(file_get_contents($lookupFile), true)
+	: [];
+	$scriptsDir = $newDir . DIRECTORY_SEPARATOR . 'scripts';
+	$iterator = new DirectoryIterator($scriptsDir);
+	while($iterator->valid()) {
+		$item = $iterator->current();
+		if ($item->isFile()) {
+			$name = pathinfo($item->getBasename(), PATHINFO_FILENAME);
+			$lookup[$name] = $item->getRealPath();
+		}
+		$iterator->next();
+	}
+	file_put_contents($lookupFile, json_encode($lookup, JSON_PRETTY_PRINT));
+}
+
+/**
+ * Returns the URL to a zip of the latest release of the given repo, or a URL
+ * to a zip of master branch if no release information could be found.
+ * @param string $repoUrl URL to a GitHub repository.
+ */
+function getZipURL($repoUrl) {
+	$template = "/https:\/\/github\.com\/(.*?)\/(.*?)\/?$/";
+	if (!preg_match($template, $repoUrl, $parts)) {
+		throw new Error("Does not seem to be a valid github repo: $repoUrl"
+		. PHP_EOL . 'Please let us know if you want to use repos from a new '
+		. 'source, or if you could help implement that! :)');
+	}
+	$user = $parts[1];
+	$repo = $parts[2];
+	$releasesURL = "https://api.github.com/repos/$user/$repo/releases";
+	$info = jampFetchJson($releasesURL, true);
+	if (is_array($info) && count($info) > 0) {
+		return $info[0]['zipball_url'];
+	}
+	return "https://github.com/$user/$repo/archive/master.zip";
+}
+
+/**
+ * Extracts the repo name from the given $repoUrl.
+ * @param string $repoUrl
+ */
+function getRepoName($repoUrl) {
+	$template = "/https:\/\/github\.com\/(.*?)\/(.*?)\/?$/";
+	if (!preg_match($template, $repoUrl, $parts)) {
+		throw new Error("Does not seem to be a valid github repo: $repoUrl"
+		. PHP_EOL . 'Please let us know if you want to use repos from a new '
+		. 'source, or if you could help implement that! :)');
+	}
+	return $parts[2];
 }
 
 /**
@@ -101,61 +160,3 @@ rmdir($tempDir);
 unlink($tempZip);
 addToLookup($to);
 jampEcho("$scriptName script added." . PHP_EOL);
-
-/**
- * Saves the location of the scripts in the given directory.
- * @newDir string The directory the scripts are saved in.
- */
-function addToLookup($newDir) {
-	$lookupFile = JAMP_INSTALLED . 'lookup.json';
-	$lookup = is_file($lookupFile)
-	? json_decode(file_get_contents($lookupFile), true)
-	: [];
-	$scriptsDir = $newDir . DIRECTORY_SEPARATOR . 'scripts';
-	$iterator = new DirectoryIterator($scriptsDir);
-	while($iterator->valid()) {
-		$item = $iterator->current();
-		if ($item->isFile()) {
-			$name = pathinfo($item->getBasename(), PATHINFO_FILENAME);
-			$lookup[$name] = $item->getRealPath();
-		}
-		$iterator->next();
-	}
-	file_put_contents($lookupFile, json_encode($lookup));
-}
-
-/**
- * Returns the URL to a zip of the latest release of the given repo, or a URL
- * to a zip of master branch if no release information could be found.
- * @param string $repoUrl URL to a GitHub repository.
- */
-function getZipURL($repoUrl) {
-	$template = "/https:\/\/github\.com\/(.*?)\/(.*?)\/?$/";
-	if (!preg_match($template, $repoUrl, $parts)) {
-		throw new Error("Does not seem to be a valid github repo: $repoUrl"
-		. PHP_EOL . 'Please let us know if you want to use repos from a new '
-		. 'source, or if you could help implement that! :)');
-	}
-	$user = $parts[1];
-	$repo = $parts[2];
-	$releasesURL = "https://api.github.com/repos/$user/$repo/releases";
-	$info = jampFetchJson($releasesURL, true);
-	if (is_array($info) && count($info) > 0) {
-		return $info[0]['zipball_url'];
-	}
-	return "https://github.com/$user/$repo/archive/master.zip";
-}
-
-/**
- * Extracts the repo name from the given $repoUrl.
- * @param string $repoUrl
- */
-function getRepoName($repoUrl) {
-	$template = "/https:\/\/github\.com\/(.*?)\/(.*?)\/?$/";
-	if (!preg_match($template, $repoUrl, $parts)) {
-		throw new Error("Does not seem to be a valid github repo: $repoUrl"
-		. PHP_EOL . 'Please let us know if you want to use repos from a new '
-		. 'source, or if you could help implement that! :)');
-	}
-	return $parts[2];
-}
